@@ -1,0 +1,300 @@
+{
+  "name": "Monthly Transactions Project",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d7a5ba7b-8de6-4d65-8b44-f3069c50b98b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E",
+          "mode": "list",
+          "cachedResultName": "n8n sheet example transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "450ac1d4-dc8e-4b0d-8346-fa70036252ed",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nMBNrv0j9mOcVrrS",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "9c952009-d9c0-4fc3-93ed-dc9bde2c5eb6",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=My row is  {{ $json.row_number }}\nthe amount was {{ $json.Amount }}\nthe category was {{ $json.Category }}\nI spent money on {{ $json.Description }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "f3c4940d-33b0-434b-8aa6-d27c22a02a79",
+      "name": "Discord",
+      "webhookId": "a5a22327-d1a0-44b0-a3e3-4ecc837fde18",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "u7M9u1QxJC4JQBKW",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "source": "googleSheets",
+        "documentId": {
+          "__rl": true,
+          "value": "1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E",
+          "mode": "list",
+          "cachedResultName": "n8n sheet example transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.evaluationTrigger",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        224
+      ],
+      "id": "637aeb81-f9d1-436f-a160-08729dc5f5a2",
+      "name": "When fetching a dataset row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nMBNrv0j9mOcVrrS",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "source": "googleSheets",
+        "documentId": {
+          "__rl": true,
+          "value": "1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E",
+          "mode": "list",
+          "cachedResultName": "n8n sheet example transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tc-ATtgBlchkCwSWtm5Y1C2dwd5pzJIaOOPceKxZ8_E/edit#gid=0"
+        },
+        "outputs": {
+          "values": [
+            {
+              "outputName": "Evaluation Status",
+              "outputValue": "={{ $json.Status }}"
+            },
+            {
+              "outputName": "Will Alert Discord",
+              "outputValue": "={{ $json['Will Alert Discord'] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        224,
+        224
+      ],
+      "id": "f2677f2e-6064-45e7-8dfd-dccfc468563a",
+      "name": "Evaluation",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nMBNrv0j9mOcVrrS",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        432
+      ],
+      "id": "4c00c568-1d8b-40e2-a287-f7d7949eeed0",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2LeNj3dSXx1FtIC3",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "="
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        432
+      ],
+      "id": "3b2fa220-fc8b-4674-b12a-d10505a66590",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "checkIfEvaluating"
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.8,
+      "position": [
+        432,
+        224
+      ],
+      "id": "5511c52b-9fad-4776-86a8-bf956c9844ef",
+      "name": "Evaluation1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When fetching a dataset row": {
+      "main": [
+        [
+          {
+            "node": "Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluation": {
+      "main": [
+        [
+          {
+            "node": "Evaluation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8af48a18-7fc0-437b-8754-8bd4e2d62b33",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0a4db2929bd9c4f5466a0466e1f29200c35a651e683f0cf62d070a24233ca05e"
+  },
+  "id": "T1eN68Zl8iix5VMl",
+  "tags": []
+}
